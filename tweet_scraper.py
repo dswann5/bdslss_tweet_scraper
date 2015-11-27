@@ -4,6 +4,7 @@ import tweepy
 import json
 import csv
 import sys
+import pymongo
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -11,7 +12,9 @@ class CustomStreamListener(tweepy.StreamListener):
 
     def on_data(self, data):
         json_data = json.loads(data)
-        file.write(str(json_data))
+        #file.write(str(json_data))
+	# Add to database instead of file
+	tweet_collection.insert(json_data)
 
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', status_code
@@ -42,10 +45,16 @@ api = tweepy.API(auth)
 # Test tweet retrieval
 #print json.loads(api.get_user("@snowden"))['followers']
 
-file = open('tweets.json', 'a')
+# Attach to Mongo and create database if it doesn't exist already
+from pymongo import MongoClient
+client = MongoClient('localhost', 27017)
+db = client['tweet_database']
+tweet_collection = db['tweets']
+
+#file = open('tweets.json', 'a')
 
 sapi = tweepy.streaming.Stream(auth, CustomStreamListener())
 sapi.filter(track=parse_csv('corpus.csv'))
 
 # In case we want to add location constraints
-#sapi.filter(locations=[103.60998,1.25752,104.03295,1.44973], track=['twitter'])
+#sapi.filter(locations=[103.60998,1.25752,104.03295,1.44973], track=parse_csv('corpus.csv'))
