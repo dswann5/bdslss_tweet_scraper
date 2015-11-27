@@ -9,7 +9,7 @@ import datetime
 import time
 import logging
 from requests.exceptions import Timeout, ConnectionError
-from requests.packages.urllib3.exceptions import ReadTimeoutError
+from requests.packages.urllib3.exceptions import ReadTimeoutError, ProtocolError
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -22,7 +22,7 @@ class CustomStreamListener(tweepy.StreamListener):
 	tweet_collection.insert(json_data)
 
     def on_error(self, status_code):
-        logging.error(sys.stderr, 'Encountered error with status code:', status_code)
+        logging.error(sys.stderr, 'Encountered error with status code: ', str(status_code))
         return True # Don't kill the stream
 
     def on_timeout(self):
@@ -68,8 +68,8 @@ while (1):
         sapi = tweepy.streaming.Stream(auth, CustomStreamListener())
         sapi.timeout = 901 # Just above the 15 minute rate limit
         sapi.filter(track=parse_csv('corpus.csv'))
-    except ( Timeout, ReadTimeoutError, ConnectionError, tweepy.error.TweepError) as err:
-	logging.error("Reloading stream connection, error " + err)
+    except ( Timeout, ReadTimeoutError, ConnectionError, ProtocolError, tweepy.error.TweepError) as err:
+	logging.error("Reloading stream connection, error " + str(err))
 	continue
 # In case we want to add location constraints
 #sapi.filter(locations=[103.60998,1.25752,104.03295,1.44973], track=parse_csv('corpus.csv'))
