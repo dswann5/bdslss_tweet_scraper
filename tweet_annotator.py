@@ -38,30 +38,46 @@ def main():
 
     annotated = connect_to_annotated_tweets()
 
+    count = 1
     # Iterate through all tweets
     for tweet in filtered.find():
-	data = {}
 	try:
+	    data = {}
 	    # Build collection entry
 	    data["id"] = str(tweet['id'])
 	    data["text"] = tweet['text'].encode('ascii', 'ignore') 
 	    data["entities"] = str(tweet['entities'])
 	    data["user"] = str(tweet['user'])
-	    print DELIMITER + tweet['text'].encode('ascii', 'ignore') + DELIMITER
-	    arg = raw_input("Input:\n'a': positive\n's': negative\n'd': neutral/irrelevant\n> ")
-	    if arg is 'a':
-		# Positive
-		data["sentiment"] = POSITIVE
-	    elif arg is 's':
-		# Negative
-		data["sentiment"] = NEGATIVE
-	    elif arg is 'd':
-		# Neutral/irrelevant
-		data["sentiment"] = NEUTRAL
 
+	    if (count < lower):
+		count = count + 1
+		continue
+	    elif (count > upper):
+		break
+
+	    while (1):
+	        print DELIMITER + tweet['text'].encode('ascii', 'ignore') + DELIMITER
+	        arg = raw_input("Input:\n'a': positive\n's': negative\n'd': neutral/irrelevant\n> ")
+		if arg is 'a':
+		    # Positive
+		    data["sentiment"] = POSITIVE
+		elif arg is 's':
+		    # Negative
+		    data["sentiment"] = NEGATIVE
+		elif arg is 'd':
+		    # Neutral/irrelevant
+		    data["sentiment"] = NEUTRAL
+		else:
+		    # Invalid input
+                    print DELIMITER + "ERROR: Invalid Input!!" + DELIMITER
+		    continue
+
+                break
 	    annotated.insert(data) 
+            count = count + 1
 	except KeyError:
-	    print "Tweet does not have an id. Ignore"
+	    #print "Tweet does not have an id. Ignore"
+	    pass
 
 
 if __name__ == "__main__":
