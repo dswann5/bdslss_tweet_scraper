@@ -56,6 +56,7 @@ def main():
 		break
 
 	    while (1):
+                print DELIMITER + "Tweet #" + str(count)
 	        print DELIMITER + tweet['text'].encode('ascii', 'ignore') + DELIMITER
 	        arg = raw_input("Input:\n'a': positive\n's': negative\n'd': neutral/irrelevant\n> ")
 		if arg is 'a':
