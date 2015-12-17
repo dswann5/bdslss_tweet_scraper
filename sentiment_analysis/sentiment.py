@@ -150,9 +150,9 @@ class TwittElection:
             self.result[candidate] = [positive,negative,neutral]
             json_data = {}
             json_data['candidate'] = str(candidate)
-            json_data['pos'] = str(positive)
-            json_data['neg'] = str(negative)
-            json_data['neutral'] = str(neutral)
+            json_data['pos'] = int(positive)
+            json_data['neg'] = int(negative)
+            json_data['neutral'] = int(neutral)
             results_collection.insert(json_data)
 	print self.result
 
