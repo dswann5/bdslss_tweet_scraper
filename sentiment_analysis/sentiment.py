@@ -89,6 +89,7 @@ class TwittElection:
         client = MongoClient('localhost', 27017)
         db = client['tweet_database']
         results = db['results']
+        results.drop()
         return results
 
     def featureExtract(self,words):

@@ -1,0 +1,1 @@
+0,30 * * * * /home/ubuntu/django_root/bdslss_tweet_scraper/update_mongo.sh
